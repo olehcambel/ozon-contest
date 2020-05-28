@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 )
@@ -19,10 +19,10 @@ func main() {
 
 	for n, count := range set {
 		if count == 1 {
-			fmt.Println(n)
+			// fmt.Println(n)
+			ioutil.WriteFile("input-201.a.txt", []byte(strconv.Itoa(n)), 0644)
 			return
 		}
 	}
 
-	fmt.Print(set)
 }

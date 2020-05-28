@@ -1,0 +1,59 @@
+package main
+
+import (
+	"bufio"
+	"io/ioutil"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	inputF, _ := os.Open("input.txt")
+	defer inputF.Close()
+
+	r := bufio.NewReader(inputF)
+	contents, _ := ioutil.ReadAll(r)
+	lines := strings.Split(string(contents), "\n")
+
+	target, _ := strconv.Atoi(lines[0])
+	seq, _ := sliceAtoi(strings.Split(lines[1], " "))
+
+	res := checkSequence5(target, seq)
+	ioutil.WriteFile("output.txt", []byte(b2s(res)), 0644)
+}
+
+func checkSequence5(target int, seq []int) bool {
+	count := make(map[int]int)
+
+	for i := 0; i < len(seq); i++ {
+		count[seq[i]]++
+	}
+
+	for k, v := range count {
+		if _, ok := count[target-k]; ok && (v > 1 || k != target-k) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func sliceAtoi(sa []string) ([]int, error) {
+	si := make([]int, 0, len(sa))
+	for _, a := range sa {
+		i, err := strconv.Atoi(a)
+		if err != nil {
+			return si, err
+		}
+		si = append(si, i)
+	}
+	return si, nil
+}
+
+func b2s(b bool) string {
+	if b {
+		return "1"
+	}
+	return "0"
+}

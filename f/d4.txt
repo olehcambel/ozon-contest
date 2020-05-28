@@ -33,7 +33,6 @@ func comparePair() error {
 	}
 
 	collect := make(map[int]int)
-	var res bool
 
 	for scanner.Scan() {
 		x, err := strconv.Atoi(scanner.Text())
@@ -47,19 +46,25 @@ func comparePair() error {
 		}
 
 		collect[x]++
-		if count, ok := collect[target-x]; ok && (count > 1 || x != target-x) {
-			res = true
-			break
-		}
 	}
 
 	if err := scanner.Err(); err != nil {
 		return err
 	}
 
+	res := checkSequence(collect, target)
 	err = ioutil.WriteFile(outputPath, []byte(b2s(res)), 0644)
 
 	return err
+}
+
+func checkSequence(collect map[int]int, target int) bool {
+	for k, v := range collect {
+		if _, ok := collect[target-k]; ok && (v > 1 || k != target-k) {
+			return true
+		}
+	}
+	return false
 }
 
 func b2s(t bool) string {
