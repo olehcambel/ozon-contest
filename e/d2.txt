@@ -1,0 +1,35 @@
+package main
+
+// Merge2Channels reads from channels, makes op and writes to out channel.
+func Merge2Channels(f func(int) int, in1 <-chan int, in2 <-chan int, out chan<- int, n int) {
+	go func() {
+
+		long := func(x int, w chan<- int) {
+			w <- f(x)
+		}
+
+		for i := 0; i < n; i++ {
+			// go func() {
+			// var x1, x2 int
+			x1, x2 := <-in1, <-in2
+
+			// for i := 0; i < 2; i++ {
+			// 	select {
+			// 	case x1 = <-in1:
+			// 	case x2 = <-in2:
+			// 	}
+			// }
+
+			w1, w2 := make(chan int), make(chan int)
+
+			go long(x1, w1)
+			go long(x2, w2)
+
+			var y1, y2 int = <-w1, <-w2
+
+			out <- y1 + y2
+			// }()
+		}
+
+	}()
+}
